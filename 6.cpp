@@ -56,15 +56,14 @@ int64_t simulate_fast(const vector<int>& initPopulation, int daysToGo = 80) {
 
     int64_t totalFishes;
     for (int d = 0; d < daysToGo; ++d) {
-        fishTimers[newSpawnTime + 1] += fishTimers.front();
+        fishTimers[newSpawnTime + 1] = fishTimers.front();
         fishTimers[spawnTime + 1] += fishTimers.front();
 
-        fishTimers[0] = 0;
         for (int i=0; i<=newSpawnTime; ++i) {
             swap(fishTimers[i], fishTimers[i+1]);
         }
 
-        totalFishes = accumulate(fishTimers.begin(), fishTimers.end(), static_cast<int64_t>(0));
+        totalFishes = accumulate(fishTimers.begin(), fishTimers.begin() + newSpawnTime + 1, static_cast<int64_t>(0));
         cout << "End of day: " << d+1 << ", total fishes: " << totalFishes << endl;
     }
 
