@@ -64,13 +64,22 @@ int64_t simulate_fast(const vector<int>& initPopulation, int daysToGo = 80) {
         }
 
         totalFishes = accumulate(fishTimers.begin(), fishTimers.begin() + newSpawnTime + 1, static_cast<int64_t>(0));
-        cout << "End of day: " << d+1 << ", total fishes: " << totalFishes << endl;
+        // cout << "End of day: " << d+1 << ", total fishes: " << totalFishes << endl;
     }
 
     return totalFishes;
 }
 
+bool verify() {
+    const vector<int> init{3,4,3,1,2};
+
+    return 5934 == simulate_fast(init) // part1
+        && 26984457539ll == simulate_fast(init, 256); // part2
+}
+
 int main(int argc, char** argv) {
+    assert(verify());
+
     vector<int> init;
     while (cin) {
         int v; char c;
