@@ -11,6 +11,7 @@
 #include <queue>
 #include <random>
 #include <set>
+#include <sstream>
 #include <stack>
 #include <tuple>
 #include <unordered_map>
