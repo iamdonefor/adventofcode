@@ -70,7 +70,6 @@ map<int, TSegment> decipher_lines(const vector<string>& lines) {
             case 7:
                 known[8] = TSegment(s);
                 break;
-
         }
     }
 

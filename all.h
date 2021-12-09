@@ -4,6 +4,7 @@
 #include <deque>
 #include <ios>
 #include <iostream>
+#include <functional>
 #include <list>
 #include <map>
 #include <memory>
