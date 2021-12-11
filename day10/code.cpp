@@ -1,4 +1,4 @@
-#include "all.h"
+#include "../all.h"
 using namespace std;
 
 using TInput = vector<string>;

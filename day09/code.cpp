@@ -1,4 +1,4 @@
-#include "all.h"
+#include "../all.h"
 using namespace std;
 
 // note to self: do no engeneeir architecture before you've seen the specification
