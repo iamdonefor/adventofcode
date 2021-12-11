@@ -70,16 +70,16 @@ int simulate(TInput g, int steps_to_simulate, EMode mode = EMode::STEPS) {
         for (const auto& flasher : flushed) {
             g[flasher.first][flasher.second] = 0;
         }
-
+        
 #ifdef NOTDEFINED
         {
-            const string red("\033[0;31m");
+            const string bright("\033[1;33m");
             const string reset("\033[0m");
 
             cout << endl << "after step: " << step << endl;
             for (int y=0; y < Y; ++y) {
             for (int x=0; x < X; ++x) {
-                cout << (g[y][x] == 0 ? red : "") << g[y][x]
+                cout << (g[y][x] == 0 ? bright : "") << g[y][x]
                  << (g[y][x] == 0 ? reset : "");
             }
             cout << endl;
