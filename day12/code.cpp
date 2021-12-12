@@ -117,10 +117,10 @@ int64_t solution(const TInput& g, bool twice = false) {
         routes.back().add(id);
     }
 
-    int generation{1};
+    // int route_length{1};
     while (!routes.empty()) {
-        // cout << generation++ << " : -------------------------------" << endl;
         int curr = routes.size();
+        // cout << "route length: " << ++route_length << ", curr routes: " << curr << ", nroutes: " << nroutes << endl;
         for (int i=0; i<curr; ++i) {
             auto route = routes.front();
             routes.pop_front();
