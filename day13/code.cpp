@@ -37,11 +37,13 @@ set<pair<int, int>> fold(const set<pair<int, int>>& dots, const vector<pair<int,
 }
 
 void print_page(ostream& os, const set<pair<int, int>>& dots) {
-    auto [miney, maxey] = minmax_element(dots.begin(), dots.end(), [](const auto& l, const auto& r) { return l.first < r.first; });
-    auto [minex, maxex] = minmax_element(dots.begin(), dots.end(), [](const auto& l, const auto& r) { return l.second < r.second; });
+    const auto [miney, maxey] = minmax_element(dots.begin(), dots.end(),
+        [](const auto& l, const auto& r) { return l.first < r.first; });
+    const auto [minex, maxex] = minmax_element(dots.begin(), dots.end(),
+        [](const auto& l, const auto& r) { return l.second < r.second; });
 
-    auto maxy = (*maxey).first;
-    auto maxx = (*maxex).second;
+    const auto maxy = (*maxey).first;
+    const auto maxx = (*maxex).second;
 
     vector<vector<int>> m(maxy + 1, vector<int>(maxx + 1, 0));
 
@@ -104,17 +106,16 @@ bool verify() {
 fold along y=7
 fold along x=5)==="};
 
-    auto [paper, folds] = parse_input(input_stream);
-    // return 17 == fold(paper, folds.front()).size();
-    auto page = fold(paper, folds);
+    const auto [paper, folds] = parse_input(input_stream);
+    const auto page = fold(paper, folds);
     print_page(cout, page);
-    return true;
+    return 17 == fold(paper, folds.front()).size();
 }
 
 int main() {
     assert(verify());
 
-    auto [paper, folds] = parse_input(cin);
+    const auto [paper, folds] = parse_input(cin);
     cout << "part1: " << fold(paper, folds.front()).size() << endl;
     cout << "part2: " << endl;
     auto result = fold(paper, folds);
