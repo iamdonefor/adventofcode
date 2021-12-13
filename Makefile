@@ -7,6 +7,11 @@ EXECUTABLE=a.out
 
 all: $(SOURCES) $(EXECUTABLE)
 
+.PHONY: clean
+clean:
+	find . -name a.out -delete
+	find . -name "*.o" -delete
+
 $(EXECUTABLE): $(OBJECTS)
 	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
 
