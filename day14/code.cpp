@@ -27,7 +27,8 @@ TPolyPairs polymerize(const string& poly, const TPolyMap& m, int steps) {
 }
 
 vector<int64_t> count_letters(const string& poly, const TPolyPairs& pairs) {
-    vector<int64_t> counter(26);
+    vector<int64_t> counter(26, 0);
+
     for (const auto& it : pairs) {
         counter[it.first.first - 'A'] += it.second;
         counter[it.first.second - 'A'] += it.second;
