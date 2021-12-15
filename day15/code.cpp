@@ -1,5 +1,6 @@
 #include "all.h"
 #include <iomanip>
+#include <chrono>
 using namespace std;
 
 void print_graph(const vector<vector<int>>& g, const string& prefix = {}) {
@@ -19,18 +20,22 @@ void print_graph(const vector<vector<int>>& g, const string& prefix = {}) {
 
 }
 
-vector<pair<int, int>> adj(const vector<vector<int>>& g, pair<int, int> v) {
+const vector<pair<int, int>>& adj(const vector<vector<int>>& g, pair<int, int> v) {
     const vector<int> helper{0, -1, 0, 1, 0};
-    vector<pair<int, int>> result;
+    static vector<pair<int, int>> result;
+
+    result.resize(4);
+    int new_size = 0;
 
     for (int i=1; i < helper.size(); ++i) {
         auto dy = helper[i] + v.first;
         auto dx = helper[i-1] + v.second;
         if (dy < 0 || dy >= g.size() || dx < 0 || dx >= g.back().size()) { continue; }
 
-        result.push_back({dy, dx});
+        result[new_size++] = {dy, dx};
     }
 
+    result.resize(new_size);
     return result;
 }
 
@@ -55,8 +60,6 @@ int dejkstra(const vector<vector<int>>& g) {
         if (curr.first == Y-1 && curr.second == X-1) {
             return weight;
         }
-
-
         if (w[curr.first][curr.second] != -1) {
             continue;
         }
@@ -74,7 +77,7 @@ int dejkstra(const vector<vector<int>>& g) {
     return 0;
 }
 
-int solve(const vector<vector<int>>& g) {
+int optimized_bfs(const vector<vector<int>>& g) {
     int X = g.front().size();
     int Y = g.size();
     const int max_weight = numeric_limits<int>::max();
@@ -93,10 +96,7 @@ int solve(const vector<vector<int>>& g) {
             auto [y, x] = q.front();
             q.pop_front();
 
-            for (int i=1; i < helper.size(); ++i) {
-                auto dy = helper[i] + y;
-                auto dx = helper[i-1] + x;
-                if (dy < 0 || dy >= Y || dx < 0 || dx >= X) { continue; }
+            for (const auto [dy, dx] : adj(g, {y, x})) {
                 if (w[dy][dx] <= w[y][x] + g[y][x]) {
                     continue;
                 }
@@ -107,18 +107,18 @@ int solve(const vector<vector<int>>& g) {
         }
     }
 
-    // algoritm does not count the last cell and counts the first one
+    // algorithm does not count the last cell and counts the first one
     return w[Y-1][X-1] + g[Y-1][X-1] - g[0][0];
 }
 
-vector<vector<int>> x5(const vector<vector<int>>& g) {
+vector<vector<int>> x5(const vector<vector<int>>& g, int M=5) {
     int X = g.front().size();
     int Y = g.size();
 
-    vector<vector<int>> result(Y*5, vector<int>(X*5));
+    vector<vector<int>> result(Y*M, vector<int>(X*M));
 
-    for (int yi = 0; yi < 5; ++yi) {
-    for (int xi = 0; xi < 5; ++xi) {
+    for (int yi = 0; yi < M; ++yi) {
+    for (int xi = 0; xi < M; ++xi) {
         auto mult = yi + xi;
         for (int y = 0; y < Y; ++y) {
         for (int x = 0; x < X; ++x) {
@@ -143,6 +143,8 @@ vector<vector<int>> parse_input(istream& in) {
     return result;
 }
 
+auto solve = dejkstra;
+
 bool verify() {
     stringstream input_stream{R"===(1163751742
 1381373672
@@ -156,10 +158,15 @@ bool verify() {
 2311944581)==="};
 
     auto graph = parse_input(input_stream);
-    auto result1 = dejkstra(graph);
+    auto result1 = solve(graph);
 
     auto graph2 = x5(graph);
-    auto result2 = dejkstra(graph2);
+
+    auto start = chrono::steady_clock::now();
+    auto result2 = solve(graph2);
+    auto end = chrono::steady_clock::now();
+    chrono::duration<double> elapsed = end - start;
+    cout << "test elapsed time: " << elapsed.count() << endl;
 
     return 40 == result1 && 315 == result2;
 }
@@ -168,8 +175,17 @@ int main() {
     assert(verify());
 
     auto g = parse_input(cin);
-    cout << "part1: " << dejkstra(g) << endl;
+    cout << "part1: " << solve(g) << endl;
 
-    auto g2 = x5(g);
-    cout << "part2: " << dejkstra(g2) << endl;
+    auto g2 = x5(g, 5);
+    vector<function<int(const vector<vector<int>>&)>> solutions{dejkstra, optimized_bfs};
+
+    for (const auto& solution : solutions) {
+        auto start = chrono::steady_clock::now();
+        cout << "part2: " << solution(g2) << endl;
+        auto end = chrono::steady_clock::now();
+        chrono::duration<double> elapsed = end - start;
+        cout << "input elapsed time: " << elapsed.count() << endl;
+    }
+
 }
