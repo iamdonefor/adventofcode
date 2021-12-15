@@ -1,5 +1,78 @@
 #include "all.h"
+#include <iomanip>
 using namespace std;
+
+void print_graph(const vector<vector<int>>& g, const string& prefix = {}) {
+    if (!prefix.empty()) {
+        cout << prefix << endl;
+    }
+
+    int X = g.front().size();
+    int Y = g.size();
+
+    for (int y = 0; y < Y; ++y) {
+    for (int x = 0; x < X; ++x) {
+        cout << setw(2) << g[y][x] << " ";
+    }
+        cout << endl;
+    }
+
+}
+
+vector<pair<int, int>> adj(const vector<vector<int>>& g, pair<int, int> v) {
+    const vector<int> helper{0, -1, 0, 1, 0};
+    vector<pair<int, int>> result;
+
+    for (int i=1; i < helper.size(); ++i) {
+        auto dy = helper[i] + v.first;
+        auto dx = helper[i-1] + v.second;
+        if (dy < 0 || dy >= g.size() || dx < 0 || dx >= g.back().size()) { continue; }
+
+        result.push_back({dy, dx});
+    }
+
+    return result;
+}
+
+int dejkstra(const vector<vector<int>>& g) {
+    int X = g.front().size();
+    int Y = g.size();
+
+    vector<vector<int>> w(Y, vector<int>(X, -1));
+
+    using T = pair<int, pair<int, int>>;
+    priority_queue<T, vector<T>, greater<T>> q;
+
+    w[0][0] = 0;
+    for (const auto& n : adj(g, {0, 0})) {
+        q.push({g[n.first][n.second], n});
+    }
+
+    while (!q.empty()) {
+        auto [weight, curr] = q.top();
+        q.pop();
+
+        if (curr.first == Y-1 && curr.second == X-1) {
+            return weight;
+        }
+
+
+        if (w[curr.first][curr.second] != -1) {
+            continue;
+        }
+        w[curr.first][curr.second] = weight;
+
+        for (const auto& n : adj(g, curr)) {
+            if (w[n.first][n.second] != -1) {
+                continue;
+            }
+
+            q.push({weight + g[n.first][n.second], {n.first, n.second}});
+        }
+    }
+
+    return 0;
+}
 
 int solve(const vector<vector<int>>& g) {
     int X = g.front().size();
@@ -48,7 +121,7 @@ vector<vector<int>> x5(const vector<vector<int>>& g) {
     for (int xi = 0; xi < 5; ++xi) {
         auto mult = yi + xi;
         for (int y = 0; y < Y; ++y) {
-        for (int x = 0; x < Y; ++x) {
+        for (int x = 0; x < X; ++x) {
             auto value = g[y][x] + mult;
             result[Y*yi + y][X*xi + x] = value > 9 ? value - 9 : value;
         }}
@@ -83,10 +156,10 @@ bool verify() {
 2311944581)==="};
 
     auto graph = parse_input(input_stream);
-    auto result1 = solve(graph);
+    auto result1 = dejkstra(graph);
 
     auto graph2 = x5(graph);
-    auto result2 = solve(graph2);
+    auto result2 = dejkstra(graph2);
 
     return 40 == result1 && 315 == result2;
 }
@@ -95,8 +168,8 @@ int main() {
     assert(verify());
 
     auto g = parse_input(cin);
-    cout << "part1: " << solve(g) << endl;
+    cout << "part1: " << dejkstra(g) << endl;
 
     auto g2 = x5(g);
-    cout << "part2: " << solve(g2) << endl;
+    cout << "part2: " << dejkstra(g2) << endl;
 }
