@@ -1,46 +1,25 @@
 #include "all.h"
 using namespace std;
 
-const static int MAPSIZE{512};
-const static char ZRO{'.'};
-const static char ONE{'#'};
-const static int DARK{0};
-const static int LIGHT{511};
-
-class EnhancedImage;
-
-class Enhancer {
-public:
-    Enhancer(const string& init)
-    : charmap(init)
-    {
-        assert(charmap.size() == MAPSIZE);
-        assert(charmap[DARK] == ZRO || charmap[LIGHT] == ZRO);
-    }
-
-    int Enhance(const EnhancedImage& img, pair<int, int> c) const;
-    int Area(char c) {
-        if (c == ONE) {
-            return charmap[LIGHT];
-        }
-        if (c == ZRO) {
-            return charmap[DARK];
-        }
-        assert(false);
-    }
-private:
-    string charmap;
-};
-
 class EnhancedImage {
 public:
-    EnhancedImage(const vector<string>& init, const Enhancer& enhancer)
-    : Y(init.size())
-    , X(init.back().size())
-    , data(init)
+    const static int MAPSIZE{512};
+    const static int DARK{0};
+    const static int LIGHT{MAPSIZE - 1};
+    const static char ZERO{'.'};
+    const static char ONE{'#'};
+
+    EnhancedImage(const vector<string>& seed, const string& enhancer)
+    : Y(seed.size())
+    , X(seed.back().size())
+    , data(seed)
     , E(enhancer)
-    , Area(ZRO)
     {
+        assert(E.size() == MAPSIZE);
+        assert(E[DARK] == ZERO || E[LIGHT] == ZERO);
+        for (const auto& s : data) {
+            LitPointsCount += count(s.begin(), s.end(), '#');
+        }
     }
 
     int Get(int y, int x) const {
@@ -50,34 +29,48 @@ public:
         return data[y][x];
     }
 
-    void Enhance() {
+    /* MUTATES */
+    void EnhanceImage() {
+        LitPointsCount = 0;
         int NY = Y + 2;
         int NX = X + 2;
-        vector<string> nd(NY, string(NX, ZRO));
+        vector<string> nd(NY, string(NX, ZERO));
 
         for (int ny=0; ny < NY; ++ny) {
         for (int nx=0; nx < NX; ++nx) {
-            nd[ny][nx] = E.Enhance(*this, {ny - 1, nx - 1});
+            nd[ny][nx] = Enhance(ny - 1, nx - 1);
+            if (nd[ny][nx] == ONE) {
+                ++LitPointsCount;
+            };
         }}
 
         Y = NY;
         X = NX;
-        Area = E.Area(Area);
+        Area = (Area == ONE ? E[LIGHT] : E[DARK]);
+
         data = move(nd);
     }
 
-    int get_lit_points() const {
-        int result{0};
-        for (const auto& s : data) {
-        for (const auto c : s) {
-            if (c == ONE) {
-                ++result;
+    int Enhance(int y, int x) const {
+        uint16_t result{0};
+
+        for (int dy = y-1; dy <= y + 1; ++dy) {
+        for (int dx = x-1; dx <= x + 1; ++dx) {
+            result <<= 1;
+            if (Get(dy, dx) == ONE) {
+                result |= 1;
             }
         }}
-        return result;
+
+        assert(result <= MAPSIZE);
+        return E[result];
     }
 
-    string to_string() const {
+    int GetLitPointsCount() const {
+        return LitPointsCount;
+    }
+
+    string ToString() const {
         stringstream builder;
         for (const auto& d : data) {
             builder << d;
@@ -87,35 +80,19 @@ public:
     }
 
 private:
-    int Y;
-    int X;
+    int Y{0};
+    int X{0};
+    int LitPointsCount{0};
     vector<string> data;
-    Enhancer E;
-    char Area;
+    string E;
+    char Area{ZERO};
 };
-
-int Enhancer::Enhance(const EnhancedImage& img, pair<int, int> c) const {
-    const auto [y, x] = c;
-    uint16_t result{0};
-
-    for (int dy = y-1; dy <= y + 1; ++dy) {
-    for (int dx = x-1; dx <= x + 1; ++dx) {
-        result <<= 1;
-        if (img.Get(dy, dx) == ONE) {
-            result |= 1;
-        }
-    }}
-
-    assert(result <= MAPSIZE);
-    return charmap[result];
-}
 
 EnhancedImage parse_input(istream& in) {
     string s;
+    string e;
 
-    getline(in, s);
-    Enhancer e(s);
-
+    getline(in, e);
     getline(in, s);
 
     vector<string> image_data;
@@ -128,9 +105,9 @@ EnhancedImage parse_input(istream& in) {
 
 int enhance(EnhancedImage& i, int rounds) {
     for (int r=0; r<rounds; ++r) {
-        i.Enhance();
+        i.EnhanceImage();
     }
-    return i.get_lit_points();
+    return i.GetLitPointsCount();
 }
 
 void verify() {
@@ -143,10 +120,12 @@ void verify() {
 ..###)=="};
 
     auto i = parse_input(in);
+    cout << i.ToString() << endl;
     enhance(i, 2);
-    assert(35 == i.get_lit_points());
+    assert(35 == i.GetLitPointsCount());
     enhance(i, 48);
-    assert(3351 == i.get_lit_points());
+    assert(3351 == i.GetLitPointsCount());
+    cout << i.ToString() << endl;
 }
 
 
@@ -155,4 +134,5 @@ int main() {
     auto i = parse_input(cin);
     cout << "part1: " << enhance(i, 2) << endl;
     cout << "part2: " << enhance(i, 48) << endl;
+    cout << i.ToString() << endl;
 }
