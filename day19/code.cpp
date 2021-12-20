@@ -67,7 +67,7 @@ vector<Scanner> parse_input(istream& in) {
 }
 
 int64_t manhattan(const Coords& l, const Coords& r) {
-    int64_t result;
+    int64_t result{0};
     for (int i=0; i<DIM; ++i) {
         result += abs(l[i] - r[i]);
     }
