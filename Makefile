@@ -1,13 +1,14 @@
 CC=g++-7
 CFLAGS=-c -std=c++17 -g -O0 -I.. -Wall
 LDFLAGS=
-SOURCES=code.cpp
+SOURCES=$(wildcard *.cpp)
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=a.out
 
 all: $(SOURCES) $(EXECUTABLE)
 
 .PHONY: clean
+
 clean:
 	find . -name a.out -delete
 	find . -name "*.o" -delete
