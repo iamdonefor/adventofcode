@@ -70,6 +70,6 @@ int game(int p1pos, int p2pos) {
     }
 }
 
-int main() {
-    cout << "part1: " << game(8,5) << endl;
-}
+// int main() {
+//     cout << "part1: " << game(8,5) << endl;
+// }
