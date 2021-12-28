@@ -232,9 +232,9 @@ void verify() {
 int main() {
     verify();
 
-    fstream fs("day17.txt");
-    stringstream in("A,B,A,C,B,C,B,C,A,C\nR,12,L,6,R,12\nL,8,L,6,L,10\nR,12,L,10,L,6,R,10\nn\n");
+    fstream fs("day25.txt");
+    // stringstream in("A,B,A,C,B,C,B,C,A,C\nR,12,L,6,R,12\nL,8,L,6,L,10\nR,12,L,10,L,6,R,10\nn\n");
 
-    tintcode ic(fs, in);
+    tintcode ic(fs, cin);
     ic.ascii().run();
 }
