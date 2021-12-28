@@ -150,47 +150,69 @@ ostream& operator<< (ostream& os, const tregisters& regs) {
 //    so each negative addition must set z % 26 - v equal to w
 
 // i found all possible prefixes of length 5 (my input has 3 increments and 2 increments)
-// and then bruteforce the last 9 digits  
+// and then bruteforce the last 9 digits
 
+
+// 14 13 12 11 5 4
+// 10 9 8 7 6 3 2 1
 
 template <size_t S>
-void run_all(const tprogram& program) {
-    // array<int, S> a;
-    int64_t count{0};
-    tinput a;
+struct tbrute {
+    array<int, S> state;
+    int start_{0};
+    bool has_next_{true};
 
-    for (int i=0; i<a.size(); ++i) a[i] = 1;
-    a[0] = 1;
-    a[1] = 1;
-    a[2] = 1;
-    a[3] = 8;
-    a[4] = 9;
-
-    while (true) {
-        auto regs = execute(program, a);
-        if (regs[3] == 0) { // || (++count % 100000000 == 0)) {
-            cout << regs << " " << a << endl;
-            return;
+    tbrute() {
+        for (size_t i=0; i<state.size(); ++i) {
+            state[i] = 1;
         }
+    }
 
-        for (int i=5; ;++i) {
-            if (i >= a.size()) {
-                return;
-            }
-            if (++a[i] <= 9) {
+    tbrute(const vector<int>& prefix)
+    : tbrute() {
+        start_ = prefix.size();
+        for (int i=0; i<start_; ++i) {
+            state[i] = prefix[i];
+        }
+    }
+
+    bool has_next() {
+        return has_next_;
+    }
+
+    const array<int, S>& next() & {
+        size_t i;
+        for (i=start_; i < S; ++i) {
+            if (++state[i] <= 9) {
                 break;
             } else {
-                a[i] = 1;
+                state[i] = 1;
             }
         }
 
+        has_next_ = (i < S);
+        return state;
     }
+};
+
+vector<array<int, 5>> search_first_five(const tprogram& program) {
+    tbrute<5> b;
+
+    while (b.has_next()) {
+        auto regs = execute(program, b.next());
+         << b.next() << endl;
+    }
+
 }
 
 int main() {
     ut();
 
-    // auto program = compile(ntd::input1 + ntd::input2 + ntd::input3 + ntd::input4 + ntd::input5);
-    auto program = compile(ntd::full_input);
-    run_all<9>(program);
+    auto program = compile(ntd::input1 + ntd::input2 + ntd::input3 + ntd::input4 + ntd::input5);
+    // auto program = compile(ntd::full_input);
+    // run_all<9>(program);
+
+    while (b.has_next()) {
+        cout << b.next() << endl;
+    }
 }

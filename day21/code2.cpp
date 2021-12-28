@@ -157,12 +157,15 @@ void part2()
     uint64_t wins[2] = {0, 0};
     for (int pt = 0; !uCount.empty(); pt = (pt + 1) % 2)
     {
+        cout << "XXX: " << uCount.size() << " " << wins[0] << " " << wins[1] << endl;
+
         std::map<State, uint64_t> nextCount;
         for (auto const &[state, universes] : uCount) {
             for (const auto& [dice, mult] : splits) {
                 auto [pos, sco] = state;
                 pos[pt] += dice;
-                sco[pt] += (pos[pt] % 10) + 1;
+                pos[pt] = (pos[pt] % 10) + 1;
+                sco[pt] += pos[pt];
                 if (sco[pt] >= 21)
                     wins[pt] += universes * mult;
                 else
