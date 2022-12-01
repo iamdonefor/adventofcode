@@ -1,8 +1,10 @@
 CC=g++-7
-CFLAGS=-c -std=c++17 -g -O0 -I.. -I../.. -Wall
-CFLAGS_RELEASE=-c -std=c++17 -O2 -I.. -I../.. -Wall
+COMMON_CFLAGS=-c --std=c++17 -Wall -I.. -I../..
+CFLAGS:=$(COMMON_CFLAGS) -g -O0
+CFLAGS_RELEASE:=$(COMMON_CFLAGS) -O2
 LDFLAGS=
-SOURCES=$(wildcard *.cpp)
+SOURCES=code.cpp
+#SOURCES=$(wildcard *.cpp)
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=a.out
 
