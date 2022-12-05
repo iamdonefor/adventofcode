@@ -1,11 +1,12 @@
 #include "all.h"
 
-using TInput = vector<int>;
+using tinput = vector<int>;
 
-TInput parseInput(istream& is) {
-    TInput result;
+tinput parseInput(istream& is) {
+    tinput result;
 
     for (string s; getline(is, s); ) {
+        // if (sscanf(s.data(), "%d,%d", &x, &y) == 2)
     }
 
     return result;
