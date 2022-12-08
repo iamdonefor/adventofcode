@@ -87,45 +87,42 @@ tvision calcVision(const tforest& f) {
     };
 
     for (int y=1; y<Y; ++y) {
+        vector<int> sup(10, 0);
         for (int x=1; x<X; ++x) {
-            vision.left[y][x] = x;
-            for (int xx=x-1; xx >= 0; --xx) {
-                if (f[y][xx] >= f[y][x]) {
-                    vision.left[y][x] = x - xx;
-                    break;
-                }
-            }
+            const auto h = f[y][x];
+            const auto upto = *max_element(sup.begin() + h, sup.end());
+
+            vision.left[y][x] = x - upto;
+            sup[h] = x;
         }
 
+        fill(sup.begin(), sup.end(), X-1);
         for (int x=X-2; x>=0; --x) {
-            vision.right[y][x] = X - x - 1;
-            for (int xx=x+1; xx < X; ++xx) {
-                if (f[y][xx] >= f[y][x]) {
-                    vision.right[y][x] = xx - x;
-                    break;
-                }
-            }
+            const auto h = f[y][x];
+            const auto upto = *min_element(sup.begin() + h, sup.end());
+
+            vision.right[y][x] = upto - x;
+            sup[h] = x;
         }
     }
 
     for (int x=1; x<X; ++x) {
+        vector<int> sup(10, 0);
         for (int y=1; y<Y; ++y) {
-            vision.up[y][x] = y;
-            for (int yy=y-1; yy >= 0; --yy) {
-                if (f[yy][x] >= f[y][x]) {
-                    vision.up[y][x] = y - yy;
-                    break;
-                }
-            }
+            const auto h = f[y][x];
+            const auto upto = *max_element(sup.begin() + h, sup.end());
+
+            vision.up[y][x] = y - upto;
+            sup[h] = y;
         }
+
+        fill(sup.begin(), sup.end(), Y-1);
         for (int y=Y-2; y>=0; --y) {
-            vision.down[y][x] = Y - y - 1;
-            for (int yy=y+1; yy < Y; ++yy) {
-                if (f[yy][x] >= f[y][x]) {
-                    vision.down[y][x] = yy - y;
-                    break;
-                }
-            }
+            const auto h = f[y][x];
+            const auto upto = *min_element(sup.begin() + h, sup.end());
+
+            vision.down[y][x] = upto - y;
+            sup[h] = y;
         }
     }
 
