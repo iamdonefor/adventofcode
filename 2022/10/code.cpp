@@ -55,12 +55,14 @@ private:
     };
 
 public:
+    const static int WINDOW{40};
+
+    tcomputer() { prepare(); }
+
     void run(const tinput& input) {
         prepare();
 
-        auto current = input.begin();
-
-        for (int tick = 0; current != input.end(); ++tick) {
+        for (auto current = input.begin(); current != input.end(); ) {
             x_by_tick.push_back(x);
 
             if (!executing) {
@@ -82,15 +84,26 @@ public:
 
     int signal_strength() const {
         int result(0);
-        for (int i=19; i<x_by_tick.size(); i+=40) {
-            // cout << i << " " << x_by_tick[i] << endl;
+        for (int i=19; i<x_by_tick.size(); i+=WINDOW) {
             result += x_by_tick[i] * (i+1);
         }
         return result;
     }
 
+    ostream& draw(ostream& os) {
+        for (int i=0; i<x_by_tick.size(); ++i) {
+            const auto visible = abs(i % WINDOW - x_by_tick[i]) < 2;
+            os
+            << (i && i % WINDOW == 0 ? "\n" : "")
+            << (visible ? '#' : '.')
+            ;
+        }
+        os << endl;
+        return os;
+    }
+
 private:
-    unique_ptr<tcommand> decode(const top& op) {
+    unique_ptr<tcommand> decode(const top& op) const {
         if (op.op == eop::NOOP) {
             return make_unique<tnoop>(*this, 0);
         }
@@ -126,7 +139,7 @@ tinput parse_input(istream& is) {
 
         top tmp{eop::ADDX};
         if (sscanf(s.data(), "addx %d", &tmp.arg) != 1) {
-            throw runtime_error("bad input " + s);
+            throw runtime_error("bad input: " + s);
         }
         result.push_back(tmp);
     }
@@ -142,6 +155,8 @@ int main() {
 
     computer.run(test_input);
     cout << computer.signal_strength() << endl;
+    computer.draw(cout);
     computer.run(input);
     cout << computer.signal_strength() << endl;
+    computer.draw(cout);
 }
