@@ -20,21 +20,20 @@ struct tmonkey {
     deque<uint64_t> items;
     function<uint64_t(uint64_t)> alert_adj;
 
-    // check worry and make decision
     uint64_t check;
     vector<int> passes_to;
 
-    //
     uint64_t lookups{0};
 };
 
 #include "monkeys.h"
 
 uint64_t solve(vector<tmonkey> monkeys, int nrounds, bool relief) {
-    uint64_t modulo{1};
-    for (const auto& monkey: monkeys) {
-        modulo *= monkey.check;
-    }
+    const uint64_t modulo = accumulate(monkeys.begin(), monkeys.end(), 1,
+        [](const auto& l, const auto& r) {
+            return l * r.check;
+        }
+    );
 
     for (int round = 0; round < nrounds; ++round) {
         for (auto& monkey : monkeys) {
@@ -52,21 +51,11 @@ uint64_t solve(vector<tmonkey> monkeys, int nrounds, bool relief) {
                 ++monkey.lookups;
             }
         }
-
-        // cout << "after round: " << round << endl;
-        //
-        // for (auto& monkey : monkeys) {
-        //     cout << "[ ";
-        //     for (const auto& item : monkey.items) {
-        //         cout << item << ", ";
-        //     }
-        //     cout << " ]" << endl;
-        // }
     }
 
-    for (int i=0; i<monkeys.size(); ++i) {
-        cout << i << " : " << monkeys[i].lookups << endl;
-    }
+    // for (int i=0; i<monkeys.size(); ++i) {
+    //     cout << i << " : " << monkeys[i].lookups << endl;
+    // }
 
     partial_sort(monkeys.begin(), monkeys.end(), monkeys.begin() + 2,
         [](const auto& lm, const auto& rm) {

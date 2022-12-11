@@ -1,3 +1,4 @@
+namespace {
 using namespace monkey_helpers;
 vector<tmonkey> test_monkeys{
     {
@@ -55,24 +56,25 @@ vector<tmonkey> prod_monkeys{
       { 52, 62, 94, 96, 52, 87, 53, 60 },
       square,
       19,
-         {3, 1}
+      {3, 1}
   },
   {
       { 94, 80, 84, 79 },
       add<5>,
       2,
-         {7, 0}
+      {7, 0}
    },
    {
       { 89 },
       add<1>,
       3,
-         {0, 5}
+      {0, 5}
   },
    {
       { 70, 59, 63 },
       add<3>,
       7,
-         {4, 3}
+      {4, 3}
     }
 };
+}
