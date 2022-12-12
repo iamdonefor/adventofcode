@@ -18,8 +18,8 @@ public:
         adj_[l].insert(r);
     };
 
-    int bfs(const tvertice& vbegin, const tvertice& vend) const {
-        deque<tvertice> q{vbegin};
+    int bfs(const vector<tvertice>& vbegin, const tvertice& vend) const {
+        deque<tvertice> q{vbegin.begin(), vbegin.end()};
         set<tvertice> seen;
 
         for (int step = 0; !q.empty(); ++step) {
@@ -134,22 +134,9 @@ abdefghi
 
 int main() {
     const auto intest = parseInput(test);
-    cout << intest.graph.bfs(intest.vbegin, intest.vend) << endl;
+    cout << intest.graph.bfs({intest.vbegin}, intest.vend) << endl;
+    cout << intest.graph.bfs({intest.allas}, intest.vend) << endl;
     const auto in = parseInput(cin);
-    cout << in.graph.bfs(in.vbegin, in.vend) << endl;
-
-    {
-        int minpath = numeric_limits<int>::max();
-        for (const auto a : intest.allas) {
-            minpath = min(intest.graph.bfs(a, intest.vend), minpath);
-        }
-        cout << minpath << endl;
-    }
-    { // too tired to code, just check all
-        int minpath =  numeric_limits<int>::max();
-        for (const auto a : in.allas) {
-            minpath = min(in.graph.bfs(a, in.vend), minpath);
-        }
-        cout << minpath << endl;
-    }
+    cout << in.graph.bfs({in.vbegin}, in.vend) << endl;
+    cout << in.graph.bfs({in.allas}, in.vend) << endl;
 }
