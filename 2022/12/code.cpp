@@ -135,8 +135,8 @@ abdefghi
 int main() {
     const auto intest = parseInput(test);
     cout << intest.graph.bfs({intest.vbegin}, intest.vend) << endl;
-    cout << intest.graph.bfs({intest.allas}, intest.vend) << endl;
+    cout << intest.graph.bfs(intest.allas, intest.vend) << endl;
     const auto in = parseInput(cin);
     cout << in.graph.bfs({in.vbegin}, in.vend) << endl;
-    cout << in.graph.bfs({in.allas}, in.vend) << endl;
+    cout << in.graph.bfs(in.allas, in.vend) << endl;
 }
