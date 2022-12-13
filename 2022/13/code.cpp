@@ -26,11 +26,16 @@ struct tpacket {
             return sign(size() - other.size());
         }
 
-        tpacket tmp1, tmp2;
-        tmp1.i = is_list() ? other.i : i;
-        tmp2.l.push_back(tmp1);
+        tpacket intaslist{
+            NOTI,
+            {{is_list() ? other.i : i}}
+        };
 
-        return is_list() ? this->cmp(tmp2) : tmp2.cmp(other);
+        return is_list() ? this->cmp(intaslist) : intaslist.cmp(other);
+    }
+
+    bool operator== (const tpacket& other) const {
+        return cmp(other) == 0;
     }
 
     bool operator< (const tpacket& other) const {
@@ -39,10 +44,16 @@ struct tpacket {
 };
 
 struct thelper {
-    string s1;
-    string s2;
-    tpacket v1;
-    tpacket v2;
+    string s;
+    tpacket p;
+
+    bool operator== (const thelper& other) const {
+        return p.cmp(other.p) == 0;
+    }
+
+    bool operator< (const thelper& other) const {
+        return p.cmp(other.p) < 0;
+    }
 };
 
 using tinput = vector<thelper>;
@@ -87,12 +98,8 @@ tinput parse_input(istream& is) {
         getline(is, s1);
         getline(is, s2);
 
-        result.push_back({
-            s1,
-            s2,
-            parse_string(s1),
-            parse_string(s2),
-        });
+        result.push_back({s1, parse_string(s1)});
+        result.push_back({s2, parse_string(s2)});
     }
     return result;
 }
@@ -126,23 +133,46 @@ stringstream test{R"(
 int solution1(const tinput& input) {
     int s{0};
 
-    for (int i=0; i<input.size(); ++i) {
-        if (input[i].v1 < input[i].v2) {
-            s+=(i+1);
+    for (int i=0; i<input.size(); i+=2) {
+        if (input[i].p < input[i+1].p) {
+            s+=(i/2+1);
         }
     }
     return s;
 }
 
 int solution2(const tinput& input) {
-    int s{0};
-
-    for (int i=0; i<input.size(); ++i) {
-        if (input[i].v1 < input[i].v2) {
-            s+=(i+1);
+    vector<thelper> v{input};
+    const tpacket div1{
+        tpacket::NOTI,
+        {
+            {
+                tpacket::NOTI,
+                {{2}}
+            },
         }
-    }
-    return s;
+    };
+    const tpacket div2{
+        tpacket::NOTI,
+        {
+            {
+                tpacket::NOTI,
+                {{6}}
+            },
+        }
+    };
+
+    const thelper helper1{string{"[[2]]"}, div1};
+    const thelper helper2{"[[6]]", div2};
+    v.push_back(helper1);
+    v.push_back(helper2);
+
+    sort(v.begin(), v.end());
+
+    const auto& it1 = find(v.begin(), v.end(), helper1);
+    const auto& it2 = find(v.begin(), v.end(), helper2);
+
+    return (it2 - v.begin() + 1) * (it1 - v.begin() + 1);
 }
 
 int main() {
@@ -152,4 +182,5 @@ int main() {
     cout << solution1(i) << endl;
 
     cout << solution2(ti) << endl;
+    cout << solution2(i) << endl;
 }
