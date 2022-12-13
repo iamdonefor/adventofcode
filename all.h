@@ -19,6 +19,16 @@
 #include <tuple>
 #include <unordered_map>
 #include <unordered_set>
+#include <variant>
 #include <vector>
 
 using namespace std;
+
+namespace {
+    template <typename T>
+    T sign(const T& v) {
+        if (v > 0) return T{1};
+        if (v < 0) return T{-1};
+        return T{0};
+    }
+}
