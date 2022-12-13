@@ -23,8 +23,7 @@ public:
         set<tvertice> seen;
 
         for (int step = 0; !q.empty(); ++step) {
-            int current = q.size();
-            for (int i=0; i<current; ++i) {
+            for (int i=0, current=q.size(); i<current; ++i) {
                 const auto best = q.front();
                 q.pop_front();
 
