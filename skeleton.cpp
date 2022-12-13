@@ -2,7 +2,7 @@
 
 using tinput = vector<int>;
 
-tinput parseInput(istream& is) {
+tinput parse_input(istream& is) {
     tinput result;
 
     for (string s; getline(is, s); ) {
