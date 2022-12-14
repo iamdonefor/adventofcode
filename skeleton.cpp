@@ -1,5 +1,8 @@
 #include "all.h"
 
+using namespace std;
+using namespace advent;
+
 using tinput = vector<int>;
 
 tinput parse_input(istream& is) {

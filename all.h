@@ -1,3 +1,5 @@
+#pragma once
+
 #include <algorithm>
 #include <cassert>
 #include <chrono>
@@ -22,13 +24,13 @@
 #include <variant>
 #include <vector>
 
-using namespace std;
-
-namespace {
+namespace advent {
     template <typename T>
     T sign(const T& v) {
         if (v > 0) return T{1};
         if (v < 0) return T{-1};
         return T{0};
     }
+
+    std::vector<std::string_view> split(std::string_view s, std::string_view by);
 }

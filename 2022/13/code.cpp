@@ -134,6 +134,8 @@ int solution1(const tinput& input) {
     int s{0};
 
     for (int i=0; i<input.size(); i+=2) {
+        cout << input[i].s << (input[i].p < input[i+1].p ? " < " : " >= ") << input[i+1].s << endl;
+
         if (input[i].p < input[i+1].p) {
             s+=(i/2+1);
         }
@@ -180,7 +182,7 @@ int main() {
     const auto i = parse_input(cin);
     cout << solution1(ti) << endl;
     cout << solution1(i) << endl;
-
-    cout << solution2(ti) << endl;
-    cout << solution2(i) << endl;
+    // 
+    // cout << solution2(ti) << endl;
+    // cout << solution2(i) << endl;
 }
