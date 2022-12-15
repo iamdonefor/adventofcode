@@ -3,8 +3,29 @@
 using namespace std;
 using namespace advent;
 
-using trange = array<int64_t, 2>;
 using tcoords = array<int64_t, 2>;
+
+class trange : public array<int64_t, 2> {
+public:
+    trange(int64_t _0, int64_t _1) {
+        this->operator[](0) = _0;
+        this->operator[](1) = _1;
+    }
+
+    bool intersects(const trange& other) const {
+        if ( (*this)[0] <= other[1] || other[0] <= (*this)[1] ) {
+            return true;
+        }
+        return false;
+    }
+
+    trange combine(const trange& other) const {
+        assert(intersects(other));
+        return trange(min((*this)[0], other[0]),  max((*this)[1], other[1]));
+    }
+
+    int64_t size() const { return (*this)[1] - (*this)[0] + 1; }
+};
 
 class tscaner {
 public:
@@ -19,11 +40,11 @@ public:
     {}
 
     optional<trange> get_at_distance(int64_t y) const {
-        const auto width = range_ - (self_[0] - y);
+        const auto width = range_ - abs(y - self_[0]);
 
         if (width < 0) { return nullopt; }
 
-        return trange{self_[1] - width, self_[1] + width};
+        return trange(self_[1] - width, self_[1] + width);
     }
 
     friend ostream& operator<< (ostream& os, const tscaner& s) {
@@ -80,6 +101,32 @@ vector<trange> find_all_invalid(const tscanners& scanners, int64_t y) {
     return ranges;
 }
 
+int64_t solve(const tscanners& scanners, int64_t y) {
+    auto ranges = find_all_invalid(scanners, y);
+    if (ranges.size() == 1) {
+        return ranges.front().size();
+    }
+
+    sort(ranges.begin(), ranges.end(), [](const auto& l, const auto& r) {
+        if (l[0] < r[0]) { return true; }
+        return l.size() > r.size();
+    });
+
+    auto cit = next(ranges.begin());
+    auto lit = ranges.begin();
+    for (; cit != ranges.end(); ++cit) {
+        if (lit->intersects(*cit)) {
+            *lit = lit->combine(*cit);
+        } else {
+            ++lit;
+        }
+    }
+
+    return accumulate(ranges.begin(), next(lit), 0, [](auto prev, const auto& cur) {
+        return prev + cur.size();
+    });
+}
+
 stringstream test{R"(Sensor at x=2, y=18: closest beacon is at x=-2, y=15
 Sensor at x=9, y=16: closest beacon is at x=10, y=16
 Sensor at x=13, y=2: closest beacon is at x=15, y=3
@@ -97,8 +144,6 @@ Sensor at x=20, y=1: closest beacon is at x=15, y=3
 )"};
 
 int main() {
-    const auto ss = parse_input(test);
-    const auto r = find_all_invalid(ss, 10);
-    cout << parse_input(test).size() << endl;
-    // cout << parse_input(fstream("input")).size() << endl;
+    cout << solve(parse_input(test), 10) << endl;
+    cout << solve(parse_input(fstream("input")), 2000000) << endl;
 }
