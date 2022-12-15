@@ -202,9 +202,12 @@ Sensor at x=20, y=1: closest beacon is at x=15, y=3
 )"};
 
 int main() {
-    // cout << solve(parse_input(test), 10) << endl;
-    // cout << solve(parse_input(fstream("input")), 2000000) << endl;
+    const auto test_input = parse_input(test);
+    const auto prod_input = parse_input(fstream("input"));
 
-    cout << solve2(parse_input(test), 0, 20) << endl;
-    cout << solve2(parse_input(fstream("input")), 0, 4000000) << endl;
+    cout << solve(test_input, 10) << endl;
+    cout << solve(prod_input, 2000000) << endl;
+
+    cout << solve2(test_input, 0, 20) << endl;
+    cout << solve2(prod_input, 0, 4000000) << endl;
 }
