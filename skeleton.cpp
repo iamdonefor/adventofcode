@@ -5,15 +5,19 @@ using namespace advent;
 
 using tinput = vector<int>;
 
-tinput parse_input(istream& is) {
+tinput parse_input(istream&& is) {
     tinput result;
 
     for (string s; getline(is, s); ) {
         if (s.empty()) { continue; }
-        // if (sscanf(s.data(), "%d,%d", &x, &y) == 2)
+        // if (sscanf(s.data(), "%ld,%ld", &x, &y) == 2)
     }
 
     return result;
+}
+
+tinput parse_input(istream& is) {
+    return parse_input(move(is));
 }
 
 stringstream test{R"(
