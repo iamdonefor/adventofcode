@@ -177,14 +177,12 @@ int64_t solve2(const tscanners& scanners, int64_t from, int64_t to) {
         });
 
         if (it == r.end()) {
-            cout << i << " ";
-            for (const auto& rr : r) {
-                cout << "(" << rr[0] << ", " << rr[1] << "), ";
-            } cout << endl;
+            assert(r.size() == 2);
+            assert(r[0][1] + 2 == r[1][0]);
+            return (r[0][1] + 1) * 4000000 + i;
         }
     }
-
-    return 100;
+    return -1;
 }
 
 stringstream test{R"(Sensor at x=2, y=18: closest beacon is at x=-2, y=15
