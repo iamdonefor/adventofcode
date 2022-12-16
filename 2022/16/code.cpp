@@ -10,10 +10,7 @@ tinput parse_input(istream&& is) {
 
     for (string s; getline(is, s); ) {
         if (s.empty()) { continue; }
-        // if (sscanf(s.data(), "%ld,%ld", &x, &y) == 2) {
-        // } else {
-        //      throw runtime_error("invalid input");
-        // }
+        // if (sscanf(s.data(), "%ld,%ld", &x, &y) == 2)
     }
 
     return result;
