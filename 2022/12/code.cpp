@@ -1,70 +1,21 @@
 #include "all.h"
 
+using namespace std;
+using namespace advent;
+
 const static int BEGIN{0};
 const static int END{25};
 
 const static vector<int> neis{1, 0, -1, 0, 1};
-
-class tgraph {
-public:
-    using tvertice = array<int, 2>;
-
-    const set<tvertice>& adj(const tvertice& v) const {
-        const static set<tvertice> empty;
-        return adj_.count(v) > 0 ? adj_.at(v) : empty;
-    };
-
-    void add(const tvertice& l, const tvertice& r) {
-        adj_[l].insert(r);
-    };
-
-    int bfs(const vector<tvertice>& vbegin, const tvertice& vend) const {
-        deque<tvertice> q{vbegin.begin(), vbegin.end()};
-        set<tvertice> seen;
-
-        for (int step = 0; !q.empty(); ++step) {
-            for (int i=0, current=q.size(); i<current; ++i) {
-                const auto best = q.front();
-                q.pop_front();
-
-                if (best == vend) {
-                    return step;
-                }
-
-                if (seen.count(best) > 0) {
-                    continue;
-                }
-                seen.insert(best);
-
-                for (const auto& v : adj(best)) {
-                    if (seen.count(v) == 0) {
-                        q.push_back(v);
-                    }
-                }
-            }
-        }
-
-        return numeric_limits<int>::max();
-    }
-
-    void set_dimensions(int y, int x) {
-        Y = y;
-        X = x;
-    }
-
-private:
-    map<tvertice, set<tvertice>> adj_;
-    int X;
-    int Y;
-};
+using tvertice = array<int, 2>;
 
 struct tinput {
-    tgraph::tvertice vbegin;
-    tgraph::tvertice vend;
+    tvertice vbegin;
+    tvertice vend;
 
-    tgraph graph;
+    tgraph<tvertice> graph;
 
-    vector<tgraph::tvertice> allas;
+    vector<tvertice> allas;
 };
 
 tinput parseInput(istream& is) {
@@ -98,8 +49,6 @@ tinput parseInput(istream& is) {
     // create graph
     int Y = sup.size();
     int X = sup.front().size();
-
-    result.graph.set_dimensions(Y, X);
 
     for (int y=0; y<Y; ++y) {
     for (int x=0; x<X; ++x) {

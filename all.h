@@ -26,12 +26,71 @@
 #include <vector>
 
 namespace advent {
+    // using namespace std;
+
     template <typename T>
     T sign(const T& v) {
         if (v > 0) return T{1};
         if (v < 0) return T{-1};
         return T{0};
     }
+
+    template<typename tvertice, typename tset=std::set<tvertice>>
+    class tgraph {
+    public:
+        const tset& adj(const tvertice& v) const {
+            const static tset empty_;
+            const auto it=adj_.find(v);
+            return it == adj_.end() ? empty_ : it->second;
+        };
+
+        const tset& vertices() const {
+            return std::cref(vertices_);
+        }
+
+        void add(const tvertice& v) {
+            vertices_.insert(v);
+        }
+
+        void add(const tvertice& l, const tvertice& r) {
+            vertices_.insert(r);
+            vertices_.insert(l);
+            adj_[l].insert(r);
+        };
+
+        int bfs(const std::vector<tvertice>& vbegin, const tvertice& vend) const {
+            std::deque<tvertice> q{vbegin.begin(), vbegin.end()};
+            tset seen;
+
+            for (int step = 0; !q.empty(); ++step) {
+                for (int i=0, current=q.size(); i<current; ++i) {
+                    const auto best = q.front();
+                    q.pop_front();
+
+                    if (best == vend) {
+                        return step;
+                    }
+
+                    if (seen.count(best) > 0) {
+                        continue;
+                    }
+                    seen.insert(best);
+
+                    for (const auto& v : adj(best)) {
+                        if (seen.count(v) == 0) {
+                            q.push_back(v);
+                        }
+                    }
+                }
+            }
+
+            return std::numeric_limits<int>::max();
+        }
+
+    private:
+        tset vertices_;
+        std::map<tvertice, tset> adj_;
+    };
 
     std::vector<std::string_view> split(std::string_view s, std::string_view by);
 }

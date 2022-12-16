@@ -15,7 +15,7 @@ release: $(EXECUTABLE)
 clean:
 	find . -name a.out -delete
 	find . -name "*.o" -delete
-	rm ../../all.o
+	rm -f ../../*.o
 
 $(EXECUTABLE): $(OBJECTS)
 	$(CC) $(LDFLAGS) $(OBJECTS) -o $@

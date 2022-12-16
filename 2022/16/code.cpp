@@ -3,26 +3,9 @@
 using namespace std;
 using namespace advent;
 
-using tinput = vector<int>;
-
-tinput parse_input(istream&& is) {
-    tinput result;
-
-    for (string s; getline(is, s); ) {
-        if (s.empty()) { continue; }
-        // if (sscanf(s.data(), "%ld,%ld", &x, &y) == 2)
-    }
-
-    return result;
-}
-
-tinput parse_input(istream& is) {
-    return parse_input(move(is));
-}
-
-stringstream test{R"(
-)"};
+#include "data.h"
 
 int main() {
-
+    cout << test_data.size() << endl;
+    cout << prod_data.size() << endl;
 }
