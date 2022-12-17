@@ -10,6 +10,7 @@
 #include <iostream>
 #include <fstream>
 #include <functional>
+#include <future>
 #include <list>
 #include <map>
 #include <memory>
@@ -50,6 +51,7 @@ namespace advent {
 
         void add(const tvertice& v) {
             vertices_.insert(v);
+            adj_[v] = {};
         }
 
         void add(const tvertice& l, const tvertice& r) {
@@ -91,6 +93,37 @@ namespace advent {
         tset vertices_;
         std::map<tvertice, tset> adj_;
     };
+
+    template <typename T>
+    void next_permutatation(T& what) {
+        using eow = std::exception;
+
+        if (what.size() == 1) {
+            return;
+        }
+
+        int inversion_index = -1;
+        for (int i = what.size() - 1; i > 0; --i) {
+            if (what[i - 1] < what[i]) {
+                inversion_index = i - 1;
+                break;
+            }
+        }
+
+        if (inversion_index == -1) {
+            throw eow();
+        }
+
+        for (int i = what.size() - 1; i > inversion_index; --i) {
+            if (what[inversion_index] < what[i]) {
+                std::swap(what[i], what[inversion_index]);
+                break;
+            }
+        }
+
+        std::sort(what.begin() + inversion_index + 1, what.end());
+        return;
+    }
 
     std::vector<std::string_view> split(std::string_view s, std::string_view by);
 }

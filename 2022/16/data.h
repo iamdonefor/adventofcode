@@ -7,16 +7,16 @@ struct tinput_node {
 };
 
 vector<tinput_node> test_data{
-{ "AA", 0, { "DD", "II", "BB" }},
-{ "BB", 13, { "CC", "AA" }},
-{ "CC", 2, { "DD", "BB" }},
-{ "DD", 20, { "CC", "AA", "EE" }},
-{ "EE", 3, { "FF", "DD" }},
-{ "FF", 0, { "EE", "GG" }},
-{ "GG", 0, { "FF", "HH" }},
-{ "II", 0, { "AA", "JJ" }},
-{ "JJ", 21, { "II" }},
-{ "HH", 22, { "GG" }},
+    { "AA", 0, { "DD", "II", "BB" }},
+    { "BB", 13, { "CC", "AA" }},
+    { "CC", 2, { "DD", "BB" }},
+    { "DD", 20, { "CC", "AA", "EE" }},
+    { "EE", 3, { "FF", "DD" }},
+    { "FF", 0, { "EE", "GG" }},
+    { "GG", 0, { "FF", "HH" }},
+    { "II", 0, { "AA", "JJ" }},
+    { "JJ", 21, { "II" }},
+    { "HH", 22, { "GG" }},
 };
 
 vector<tinput_node> prod_data{
@@ -80,4 +80,3 @@ vector<tinput_node> prod_data{
 { "NS", 23, { "EU", "DN" }},
 { "KD", 0, { "BY", "CJ" }},
 };
-
