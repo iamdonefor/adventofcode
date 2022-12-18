@@ -128,4 +128,19 @@ namespace advent {
     std::vector<std::string_view> split(std::string_view s, std::string_view by);
 
     using tcoords = std::array<int64_t, 2>;
+    using tcoords3 = std::array<int64_t, 3>;
+
+    class trange : public std::array<int64_t, 2> {
+    public:
+        trange(int64_t _0, int64_t _1);
+
+        bool intersects(const trange& other) const;
+        bool is_adj(const trange& other) const;
+
+        bool contains(int64_t x) const;
+        bool contains(const trange& other) const;
+
+        trange combine(const trange& other) const;
+        int64_t size() const;
+    };
 }

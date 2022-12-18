@@ -3,38 +3,6 @@
 using namespace std;
 using namespace advent;
 
-using tcoords = array<int64_t, 2>;
-
-class trange : public array<int64_t, 2> {
-public:
-    trange(int64_t _0, int64_t _1) {
-        this->operator[](0) = _0;
-        this->operator[](1) = _1;
-    }
-
-    bool intersects(const trange& other) const {
-        if ( ((*this)[0] <= other[1] && (*this)[1] >= other[0])
-            || (other[0] <= (*this)[1] && other[1] >= (*this)[0])) {
-            return true;
-        }
-        return false;
-    }
-
-    trange combine(const trange& other) const {
-        return trange(min((*this)[0], other[0]),  max((*this)[1], other[1]));
-    }
-
-    bool contains(int64_t x) const {
-        return x >= (*this)[0] && x <= (*this)[1];
-    }
-
-    bool contains(const trange& other) const {
-        return other[0] >= (*this)[0] && other[1] <= (*this)[1];
-    }
-
-    int64_t size() const { return (*this)[1] - (*this)[0] + 1; }
-};
-
 class tscaner {
 public:
     static int64_t mhd(const tcoords& l, const tcoords& r) {
@@ -121,7 +89,7 @@ tranges collapse_ranges(tranges ranges) {
 
     auto lit = ranges.begin();
     for (auto cit = next(ranges.begin()) ; cit != ranges.end(); ++cit) {
-        if (lit->intersects(*cit) || (*lit)[1] + 1 == (*cit)[0]) {
+        if (lit->intersects(*cit) || lit->is_adj(*cit)) {
             *lit = lit->combine(*cit);
         } else {
             *(++lit) = *cit;
