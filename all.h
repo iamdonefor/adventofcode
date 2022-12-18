@@ -126,4 +126,6 @@ namespace advent {
     }
 
     std::vector<std::string_view> split(std::string_view s, std::string_view by);
+
+    using tcoords = std::array<int64_t, 2>;
 }
