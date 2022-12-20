@@ -60,6 +60,7 @@ public:
 
     int64_t top() const { return top_; }
     int64_t max_fall() const { return max_fall_; }
+    int64_t wind_pos() const { return wind_ptr - wind.begin(); }
 
     friend ostream& operator<<(ostream& os, const tchamber& c) {
         for (auto it = c.state.rbegin(); it != c.state.rend(); ++it) {
@@ -214,16 +215,23 @@ int main() {
         // const auto [s, v] = search_for_cycle(wind); // 15, 1015
         int64_t s = 15;
         int64_t v = 1015;
-        cout << s << ", " << v << endl;
+        // int64_t prev = chamber.run(15);
+        // for (int i=0; i<30; ++i) {
+        //     auto x = chamber.run(1015);
+        //     cout << i << " " << chamber.wind_pos() << x - prev << endl;
+        //     prev = x;
+        // }
+
+        // return 0;
 
         auto seed_height = chamber.run(s);
-        auto next_height = chamber.run(v);
-        auto cycle_height = chamber.run(v) - next_height;
-        auto leftover_height = chamber.run((Q - s) % v) - 2 * cycle_height + seed_height;
-        cout << seed_height << " " << cycle_height << " " << leftover_height << endl;
+        auto cycle_height = chamber.run(v) - seed_height;
+        auto leftover_height = chamber.run((Q - s) % v) - cycle_height + seed_height;
+        cout << "seed: " << s << ", cycle: " << v << ", lo: " << (Q - s) % v << endl;
+        cout << "seed_height: " << seed_height << ", cycle_height: " << cycle_height << ", leftover_height: " << leftover_height << endl;
 
-        int64_t total_height = seed_height + ((Q - s) / v) * cycle_height + leftover_height;
-        cout << total_height << endl;
+        int64_t total_height = -seed_height + ((Q - s) / v) * cycle_height + leftover_height;
+        cout << total_height << " " << total_height - 1514285714288 << endl;
     }
     {
         const auto wind = parse_input(fstream("input"));
@@ -232,16 +240,24 @@ int main() {
         // const auto c = chamber.run(1740) - s;
         int64_t s = 201;
         int64_t v = 1740;
-        cout << s << ", " << v << endl;
+
+        // int64_t prev = chamber.run(s);
+        // for (int i=0; i<30; ++i) {
+        //     auto x = chamber.run(v);
+        //     cout << i << " " << chamber.wind_pos() << " " << x - prev << endl;
+        //     prev = x;
+        // }
+        //
+        // return 0;
 
         auto seed_height = chamber.run(s);
-        auto next_height = chamber.run(v);
-        auto cycle_height = chamber.run(v) - next_height;
-        auto leftover_height = chamber.run((Q - s) % v) - 2 * cycle_height + seed_height;
-        cout << seed_height << " " << cycle_height << " " << leftover_height << endl;
+        auto cycle_height = chamber.run(v) - seed_height;
+        auto leftover_height = chamber.run((Q - s) % v) - cycle_height + seed_height;
+        cout << "seed: " << s << ", cycle: " << v << ", lo: " << (Q - s) % v << endl;
+        cout << "seed_height: " << seed_height << ", cycle_height: " << cycle_height << ", leftover_height: " << leftover_height << endl;
 
-        int64_t total_height = seed_height + ((Q - s) / v) * cycle_height + leftover_height;
-        cout << total_height << endl;
+        int64_t total_height = -seed_height + ((Q - s) / v) * cycle_height + leftover_height;
+        cout << total_height << " " << total_height - 1514285714288 << endl;
         // search_for_cycle(wind);
     }
 }
