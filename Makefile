@@ -1,5 +1,5 @@
 CC=g++-9
-CFLAGS=-c -std=c++17 -g -O0 -I.. -I../.. -Wall
+CFLAGS=-c -std=c++2a -g -O0 -I.. -I../.. -Wall
 CFLAGS_RELEASE=-c -std=c++17 -O2 -I.. -I../.. -Wall
 #LDFLAGS=-pthread
 SOURCES=$(wildcard *.cpp) ../../all.cpp
