@@ -26,6 +26,14 @@ tinput parse_input(istream& is) {
 stringstream test{R"(
 )"};
 
-int main() {
+int64_t solution1(const tinput& data) {
+    return 0;
+}
 
+int main() {
+    const auto& testi = parse_input(test);
+    const auto& cini = parse_input(cin);
+
+    cout << solution1(testi) << endl;
+    cout << solution1(cini) << endl;
 }
