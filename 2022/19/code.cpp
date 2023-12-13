@@ -20,7 +20,6 @@ struct tbleuprint {
 };
 
 struct tstate {
-    int ts;
     trobots robots;
     tores ores;
 };
@@ -73,11 +72,31 @@ optional<tores> try_robot(erobot rtype, const tbleuprint& bp, tores ores) {
     return result;
 }
 
+bool can_build_any(const tbleuprint& bp, const tores ores) {
+    for (const auto rtype : { ore, clay, obsidian, geode }) {
+    const auto& need_ores = bp.costs.at(rtype);
+        for (int otype = 0; otype < 4; otype++) {
+            if (need_ores[otype] > ores[otype]) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+bool operator< (const tstate& l, const tstate& r) {
+    if (l.ores == r.ores) {
+        return l.robots < r.robots;
+    }
+    return l.ores < r.ores;
+}
+
 int64_t evaluate_blueprint(const tbleuprint& bp) {
-    vector<tstate> states = {{ -1, {1, 0, 0, 0}, {0, 0, 0, 0} }};
+    set<tstate> states = {{ {1, 0, 0, 0}, {0, 0, 0, 0} }};
 
     for (int time = 0; time < TIME; ++time) {
-        vector<tstate> next_states;
+        set<tstate> next_states;
 
         for (auto& state : states) {
             auto ores = state.ores;
@@ -87,35 +106,54 @@ int64_t evaluate_blueprint(const tbleuprint& bp) {
                 ores[i] += robots[i];
             }
 
-            next_states.push_back(tstate{ time, robots, ores });
+            if (!can_build_any(bp, ores)) {
+                next_states.insert(tstate{ robots, ores });
+            }
 
             if (auto result = try_robot(ore, bp, ores); result) {
                 ++robots[ore];
-                next_states.push_back(tstate{ time, robots, *result });
+                next_states.insert(tstate{ robots, *result });
                 --robots[ore];
             }
 
             if (auto result = try_robot(clay, bp, ores); result) {
                 ++robots[clay];
-                next_states.push_back(tstate{ time, robots, *result });
+                next_states.insert(tstate{ trobots, *result });
                 --robots[clay];
             }
 
             if (auto result = try_robot(obsidian, bp, ores); result) {
                 ++robots[obsidian];
-                next_states.push_back(tstate{ time, robots, *result });
+                next_states.insert(tstate{ robots, *result });
                 --robots[obsidian];
             }
 
             if (auto result = try_robot(geode, bp, ores); result) {
                 ++robots[geode];
-                next_states.push_back(tstate{ time, robots, *result });
+                next_states.insert(tstate{ trobots, *result });
                 --robots[geode];
             }
         }
 
-        cout << time << " " << states.size() << endl;
-        states = move(next_states);
+        states.clean();
+
+        // cleanup bad states - for same robot structure use only the best ore output
+
+        map<trobots, tset<ores>> checker;
+        for (const auto s: states) {
+            checker[s.robots].insert(s.ores);
+        }
+
+        for (const auto& [rbts, ores] : checker) {
+            for (ore in ores) {
+                
+            }
+        }
+
+        cout << time << "s: " << states.size() << endl;
+        cout << time << "c: " << checker.size() << endl;
+
+
     }
 
     return 0;
