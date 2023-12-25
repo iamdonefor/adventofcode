@@ -50,5 +50,4 @@ namespace advent {
     }
 
     int64_t trange::size() const { return (*this)[1] - (*this)[0] + 1; }
-
 }

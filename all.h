@@ -143,4 +143,18 @@ namespace advent {
         trange combine(const trange& other) const;
         int64_t size() const;
     };
+
+    template <typename T>
+    std::ostream& operator << (std::ostream& os, const std::vector<std::vector<T>>& v) {
+        if (v.empty() || v.front().empty()) { return os; }
+        for (size_t y=0; y<v.size(); ++y) {
+        bool first = true;
+        for (size_t x=0; x<v.front().size(); ++x) {
+            os << (first ? "" : ", ") << v[y][x];
+        }
+        os << std::endl;
+        }
+        return os;
+    }
+
 }
