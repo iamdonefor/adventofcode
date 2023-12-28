@@ -130,6 +130,8 @@ namespace advent {
     using tcoords = std::array<int64_t, 2>;
     using tcoords3 = std::array<int64_t, 3>;
 
+    tcoords operator+ (const tcoords& l, const tcoords& r);
+
     class trange : public std::array<int64_t, 2> {
     public:
         trange(int64_t _0, int64_t _1);
@@ -156,5 +158,4 @@ namespace advent {
         }
         return os;
     }
-
 }

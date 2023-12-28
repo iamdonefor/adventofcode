@@ -3,6 +3,10 @@
 namespace advent {
     using namespace std;
 
+    tcoords operator+ (const tcoords& l, const tcoords& r) {
+        return {l[0] + r[0], l[1] + r[1]};
+    }
+
     vector<string_view> split(string_view s, string_view by) {
         vector<string_view> result;
 
