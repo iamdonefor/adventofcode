@@ -6,7 +6,9 @@ using namespace advent;
 struct tdig {
     int direction;
     int distance;
-    string color;
+
+    int direction2;
+    int distance2;
 };
 
 using tinput = vector<tdig>;
@@ -19,8 +21,34 @@ tinput parse_input(istream&& is) {
 
         char c; int d; char b[7];
         if (sscanf(s.data(), "%c %d (%7c)", &c, &d, b) == 3) {
+            tdig next;
+            next.direction = c;
+            next.distance = d;
+
+            string ss{b+1, 6};
+            d = stoi(ss, nullptr, 16);
+            
+            switch (d&0xff) {
+            case 0:
+                c = 'R';
+                break;
+            case 1:
+                c = 'D';
+               break;
+            case 2:
+                c = 'L';
+                break;
+            case 3:
+                c = 'U';
+                break;
+            }
+
+            d >>= 8;
+            next.distance2 = d;
+            next.direction2 = c;
+
             result.push_back({
-                c, d, string(b, 7)
+                next
             });
         } else {
              throw runtime_error("invalid input");
@@ -98,7 +126,7 @@ int64_t solution1(const tinput& data) {
         miny = min(miny, y);
     }
 
-    // cout << maxx << " " << minx << " " << maxy << " " << miny << endl;
+    cout << maxx << " " << minx << " " << maxy << " " << miny << endl;
 
     vector<vector<char>> digmap(maxy - miny + 1, vector<char>(maxx - minx + 1, '.'));
     x = -minx; y = -miny;
@@ -118,12 +146,80 @@ int64_t solution1(const tinput& data) {
     }}
 
     return result;
+    return 0;
+}
+
+struct tborder {
+    tcoords b;
+    tcoords e;
+    bool h;
+};
+
+int64_t solution2(const tinput data) {
+    int minx = 0;
+    int maxx = 0;
+    int miny = 0;
+    int maxy = 0;
+
+    int x = 0;
+    int y = 0;
+
+    vector<tborder> lines;
+
+    for (const auto& d : data) {
+        tborder next;
+        next.b = {y, x};
+
+        if (d.direction2 == 'R') { x += d.distance2; next.h = true; }
+        if (d.direction2 == 'L') { x -= d.distance2; next.h = true; }
+        if (d.direction2 == 'D') { y += d.distance2; }
+        if (d.direction2 == 'U') { y -= d.distance2; }
+    
+        maxx = max(maxx, x);
+        maxy = max(maxy, y);
+        minx = min(minx, x);
+        miny = min(miny, y);
+
+        next.e = {y, x};
+        if (next.b[0] < next.e[0]) { swap(next.b, next.e); }
+        lines.push_back(move(next));
+    }
+
+    sort(lines.begin(), lines.end(), [](const auto& l, const auto& r) { return l.b[1] < r.b[1]; });
+
+    cout << maxx << " " << minx << " " << maxy << " " << miny << endl;
+
+    // int64_t result;
+    // for (int y=miny; y<=maxy; ++y) {
+    //     bool inside = false;
+    //     for (int i=0; i<lines.size(); ++i) {
+    //         const auto& l = lines[i];
+
+    //         if (l.h) {
+    //             if (b[0] == y) {
+    //                 result += (l.e[1] - l.b[1]);
+    //             }
+    //             continue;
+    //         }
+
+    //         if (l.b[0] < y || l.e[0] > y) {
+    //             continue;
+    //         }
+
+    //         if (!inside) 
+    //     }
+    // }
+
+
+    return 0;
 }
 
 int main() {
     const auto& testi = parse_input(test);
     cout << solution1(testi) << endl;
+    cout << solution2(testi) << endl;
 
     const auto& cini = parse_input(cin);
     cout << solution1(cini) << endl;
+    cout << solution2(cini) << endl;
 }

@@ -1,4 +1,4 @@
-CC=g++-9
+CC=g++-11
 CFLAGS=-c -std=c++2a -g -O0 -I.. -I../.. -Wall
 CFLAGS_RELEASE=-c -std=c++17 -O2 -I.. -I../.. -Wall
 #LDFLAGS=-pthread
