@@ -109,6 +109,9 @@ int64_t check_eq2(const tequation& d) {
                 default:
                     throw runtime_error("not pow 3");
             }
+            if (check > d.result) {
+                break;
+            }
         }
 
         if (check == d.result) {
