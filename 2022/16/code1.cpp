@@ -93,20 +93,18 @@ int64_t solution(const tgraph<tvertice>& graph) {
     states.push_back({.where = {"AA"}});
 
     while(!states.empty()) {
-    for (const auto& state : states) {
-        cout << state.where << " " << state.time << " " << state.valves << endl;
-    }
-    getchar();
+    // for (const auto& state : states) {
+    //     cout << state.where << " " << state.time << " " << state.valves << endl;
+    // }
+    cout << states.size() << endl;
         for (size_t i = states.size(); i > 0; --i) {
             const auto& state = states.front();
             states.pop_front();
 
             for (size_t valve = 0; valve < vertices.size(); ++valve) {
                 if (!((1 << valve) & state.valves)) {
-                    cout << state.where << " " << vertices[valve] << endl;
                     int extra_time = distances.at(tie(state.where, vertices[valve])) + 1;
 
-                    cout << extra_time << endl;
                     if (state.time + extra_time > TL) {
                         continue; // XXX push end state
                     }
