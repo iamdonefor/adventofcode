@@ -1,4 +1,4 @@
-CC=g++-7
+CC=g++-11
 COMMON_CFLAGS=-c --std=c++17 -Wall -I.. -I../..
 CFLAGS:=$(COMMON_CFLAGS) -g -O0
 CFLAGS_RELEASE:=$(COMMON_CFLAGS) -O2
